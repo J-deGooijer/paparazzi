@@ -14,7 +14,7 @@ float object_matrix[object_amount][14];
 uint8_t k_object = 0;
 
 
-uint8_t test_matrix = {
+uint8_t test_matrix[22][37] = {
     {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -39,10 +39,11 @@ uint8_t test_matrix = {
     {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
     };
 
+int rows=22;
+int cols=37;
 
 
-
-void x_ray(uint8_t* bin_mat, uint8_t* k_object, float* object_matrix)
+void x_ray(uint8_t bin_mat[rows][cols], uint8_t* k_object, float object_matrix[object_amount][14])
 {
     uint8_t i_start = 0;
     uint8_t i_end = rows;
