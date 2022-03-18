@@ -42,7 +42,7 @@ uint8_t test_matrix = {
 
 
 
-void x_ray(uint8_t* bin_mat, uint8_t* k_object, float* object_matrix, )
+void x_ray(uint8_t* bin_mat, uint8_t* k_object, float* object_matrix)
 {
     uint8_t i_start = 0;
     uint8_t i_end = rows;
