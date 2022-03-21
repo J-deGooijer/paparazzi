@@ -1,12 +1,10 @@
 
-
-
-uint8_t[20][20] FindObjectBlobs(struct image_t* img, 
+void FindObjectBlobs(int *return_img[20][20], struct image_t* img, 
         uint8_t lum_min, uint8_t lum_max, 
         uint8_t cb_min,  uint8_t cb_max,
         uint8_t cr_min, uint8_t cr_max)
 {
-    uint8_t[20][20] return_img;
+    // uint8_t[20][20] return_img;
     uint8_t* buffer = img->buf;
     for (uint16_t y = 0; y < img->h; y++) {
         for (uint16_t x = 0; x < img->w; x ++) {
@@ -37,7 +35,7 @@ uint8_t[20][20] FindObjectBlobs(struct image_t* img,
         }
     }
 
-    return return_img;
+    return false;
     
 }
 
@@ -81,7 +79,14 @@ void edge_finder(int *matrix_edge[100][100], struct image_t im){
     int bin_mat2[100][100] = filter_color(im,70,120,150,160,100,120);//Blue chair
     int bin_mat3[100][100] = filter_color(im,100,200,90,130,160,240);//Orange
 
-    int bin_mat_tot[100][100] = bin_mat1+bin_mat2+bin_mat3; 
+    int bin_mat_tot[100][100];
+
+    for (int i=0; i<100; ++i){
+        for (int j=0; j<100; ++j){
+            int bin_mat_tot[i][j] = bin_mat1[i][j]+bin_mat2[i][j]+bin_mat3[i][j];
+        }
+    } 
+
     edge_definer(&matrix_egde, bin_mat_tot);
 
     return false;
