@@ -56,10 +56,11 @@ static pthread_mutex_t mutex;
 
 //Variables
 uint8_t k_object = 0;
-uint32_t object_matrix[object_amount][8]; 
-uint32_t rows; //Should have a value assigned.
-uint32_t cols; //Should have a value assigned.
-uint8_t matrix_edge[rows][cols];
+uint8_t object_amount = 100;
+uint32_t object_matrix[100][8]; 
+uint32_t rows = 520; //Should have a value assigned.
+uint32_t cols = 240; //Should have a value assigned.
+uint8_t matrix_edge[520][240];
 
 // Filter Settings
 uint8_t cod_lum_min1 = 0;
@@ -286,8 +287,7 @@ void color_object_detector_periodic(void)
     local_filters[0].updated = false;
   }
   if(local_filters[1].updated){
-    AbiSendMsgVISUAL_DETECTION(COLOR_OBJECT_DETECTION2_ID, local_filters[1].x_c, local_filters[1].y_c,
-        0, 0, local_filters[1].color_count, 1);
+    AbiSendMsgOF_OBSTACLE_DATA(OPTIC_FLOW_OBSTACLE_DATA1_ID, &local_filters[1]);
     local_filters[1].updated = false;
   }
 }
@@ -556,7 +556,7 @@ void x_ray(uint8_t bin_mat[rows][cols], uint8_t* k_object, uint32_t object_matri
 
 void CallFunction(struct image_t *img, uint8_t object_amount)
 {
-    edgefinder(img);
+    edge_finder(img,matrix_edge[rows][cols]);
 
     x_ray(matrix_edge, &k_object, object_matrix, object_amount);
 
