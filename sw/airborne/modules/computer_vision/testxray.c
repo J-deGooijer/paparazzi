@@ -162,7 +162,7 @@ void x_ray(int bin_mat[rows][cols], int* k_object, float object_matrix[object_am
                             inside_object=true;
                             for(int z = 0; z< object_matrix[K][3]-j;z++)
                             {
-                                K++;
+                                j++;
                             }
                         }
                         if(inside_object)
