@@ -131,6 +131,11 @@ static struct image_t *object_detector(struct image_t *img, uint8_t filter)
       return img;
   };
 
+
+  edge_finder(img,matrix_edge[rows][cols]);
+
+  x_ray(matrix_edge, &k_object, object_matrix, object_amount);
+
   int32_t x_c, y_c;
 
   // Filter and find centroid
@@ -141,9 +146,9 @@ static struct image_t *object_detector(struct image_t *img, uint8_t filter)
   // VERBOSE_PRINT(img->w, img->h);
 
 
-  //edge_finder(img);
+  edge_finder(img);
 
-  CallFunction(img, 100); //Vul hier de object amount in, 100 lijkt me voor nu meer dan voldoende, mag lager.
+  //CallFunction(img, 100); //Vul hier de object amount in, 100 lijkt me voor nu meer dan voldoende, mag lager.
 
 
   pthread_mutex_lock(&mutex);
@@ -272,24 +277,6 @@ uint32_t find_object_centroid(struct image_t *img, int32_t* p_xc, int32_t* p_yc,
     *p_yc = 0;
   }
   return cnt;
-}
-
-void color_object_detector_periodic(void)
-{
-  static struct color_object_t local_filters[2];
-  pthread_mutex_lock(&mutex);
-  memcpy(local_filters, global_filters, 2*sizeof(struct color_object_t));
-  pthread_mutex_unlock(&mutex);
-
-  if(local_filters[0].updated){
-    AbiSendMsgVISUAL_DETECTION(COLOR_OBJECT_DETECTION1_ID, local_filters[0].x_c, local_filters[0].y_c,
-        0, 0, local_filters[0].color_count, 0);
-    local_filters[0].updated = false;
-  }
-  if(local_filters[1].updated){
-    AbiSendMsgOF_OBSTACLE_DATA(OPTIC_FLOW_OBSTACLE_DATA1_ID, &local_filters[1]);
-    local_filters[1].updated = false;
-  }
 }
 
 void FindObjectBlobs(uint8_t (*return_img)[100], struct image_t* img, 
@@ -554,11 +541,29 @@ void x_ray(uint8_t bin_mat[rows][cols], uint8_t* k_object, uint32_t object_matri
     }
 }
 
-void CallFunction(struct image_t *img, uint8_t object_amount)
-{
-    edge_finder(img,matrix_edge[rows][cols]);
+// void CallFunction(struct image_t *img, uint8_t object_amount)
+// {
+//     edge_finder(img,matrix_edge[rows][cols]);
 
-    x_ray(matrix_edge, &k_object, object_matrix, object_amount);
+//     x_ray(matrix_edge, &k_object, object_matrix, object_amount);
 
   
+// }
+
+void color_object_detector_periodic(void)
+{
+  static struct color_object_t local_filters[2];
+  pthread_mutex_lock(&mutex);
+  memcpy(local_filters, global_filters, 2*sizeof(struct color_object_t));
+  pthread_mutex_unlock(&mutex);
+
+  if(local_filters[0].updated){
+    AbiSendMsgVISUAL_DETECTION(COLOR_OBJECT_DETECTION1_ID, local_filters[0].x_c, local_filters[0].y_c,
+        0, 0, local_filters[0].color_count, 0);
+    local_filters[0].updated = false;
+  }
+  if(local_filters[1].updated){
+    AbiSendMsgOF_OBSTACLE_DATA(OPTIC_FLOW_OBSTACLE_DATA1_ID, &local_filters[1]);
+    local_filters[1].updated = false;
+  }
 }
