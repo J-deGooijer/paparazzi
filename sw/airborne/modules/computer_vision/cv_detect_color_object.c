@@ -485,6 +485,7 @@ void edge_finder(struct image_t *im){
 //     int j_start = 0;
 //     int j_end = cols;
 //     int j_running=0;
+//     *k_object=0;
 
 //     bool running = true;
 
