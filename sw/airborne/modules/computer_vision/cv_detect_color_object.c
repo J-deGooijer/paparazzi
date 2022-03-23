@@ -279,7 +279,7 @@ uint32_t find_object_centroid(struct image_t *img, int32_t* p_xc, int32_t* p_yc,
   return cnt;
 }
 
-void FindObjectBlobs(uint8_t (*return_img)[100], struct image_t* img, 
+void FindObjectBlobs(uint8_t (*return_img)[240], struct image_t* img, 
         uint8_t lum_min, uint8_t lum_max, 
         uint8_t cb_min,  uint8_t cb_max,
         uint8_t cr_min, uint8_t cr_max)
@@ -355,17 +355,17 @@ void edge_definer(uint8_t (*matrix_edge)[100], uint8_t (*bin_mat)[100]){
 }
 
 void edge_finder(struct image_t *im, uint8_t matrix_edge[100][100]){
-    uint8_t bin_mat1[100][100];
+    uint8_t bin_mat1[520][240];
     FindObjectBlobs(bin_mat1, im,180,253,100,150,130,140);//orange pole and chairs
-    uint8_t bin_mat2[100][100];
+    uint8_t bin_mat2[520][240];
     FindObjectBlobs(bin_mat2, im,70,120,150,160,100,120);//Blue chair
-    uint8_t bin_mat3[100][100];
+    uint8_t bin_mat3[520][240];
     FindObjectBlobs(bin_mat3, im,100,200,90,130,160,240);//Orange
 
-    uint8_t bin_mat_tot[100][100];
+    uint8_t bin_mat_tot[520][240];
 
-    for (uint32_t i=0; i<100; ++i){
-       for (uint32_t j=0; j<100; ++j){
+    for (uint32_t i=0; i<520; ++i){
+       for (uint32_t j=0; j<240; ++j){
             bin_mat_tot[i][j] = bin_mat1[i][j]+bin_mat2[i][j]+bin_mat3[i][j];
         }
     } 

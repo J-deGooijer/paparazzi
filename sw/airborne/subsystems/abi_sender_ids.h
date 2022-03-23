@@ -487,4 +487,12 @@
 #define JOYSTICK_ID 1
 #endif
 
+/*
+ * OF_OBSTACLE_DATA (message 31)
+*/
+
+#ifndef OPTIC_FLOW_OBSTACLE_DATA1_ID
+#define OPTIC_FLOW_OBSTACLE_DATA1_ID 1
+#endif
+
 #endif /* ABI_SENDER_IDS_H */
