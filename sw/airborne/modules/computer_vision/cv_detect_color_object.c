@@ -323,9 +323,9 @@ void edge_definer(uint8_t (*matrix_edge)[240], uint8_t (*bin_mat)[240]){
     uint32_t row = 520;
     uint32_t column = 240;
 
-    for (uint32_t i; i<row; ++i){
+    for (uint32_t i=0; i<row; ++i){
         uint8_t temp = 0;
-        for (uint32_t j; j<column; ++j){
+        for (uint32_t j=0; j<column; ++j){
             if (temp != bin_mat[i][j]){   // if bin_mat[i][j] == 1
                 matrix_edge[i][j] = 1;
                 if (temp==0){
@@ -337,9 +337,9 @@ void edge_definer(uint8_t (*matrix_edge)[240], uint8_t (*bin_mat)[240]){
         }
     }
 
-    for (uint32_t j; j<column; ++j){
+    for (uint32_t j=0; j<column; ++j){
         uint8_t temp = 0;
-        for (uint32_t i; i<row; ++i){
+        for (uint32_t i=0; i<row; ++i){
             if (temp != bin_mat[i][j]){
                 matrix_edge[i][j] = 1;
                 if (temp == 0){
@@ -552,6 +552,11 @@ void x_ray(uint8_t bin_mat[rows][cols], uint8_t* k_object, uint32_t object_matri
 
 void CallFunction(struct image_t *img, uint8_t object_amount)
 {
+    for (uint32_t i=0; i<520; ++i){
+       for (uint32_t j=0; j<240; ++j){
+            matrix_edge[i][j]=0;
+        }
+    } 
     edge_finder(img,matrix_edge[rows][cols]);
     printf("\nThe Array elements are:\n");
     // outer loop for row
