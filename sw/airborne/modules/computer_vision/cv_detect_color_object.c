@@ -319,7 +319,7 @@ void FindObjectBlobs(uint8_t (*return_img)[240], struct image_t* img,
     
 }
 
-void edge_definer(uint8_t (*matrix_edge)[100], uint8_t (*bin_mat)[100]){
+void edge_definer(uint8_t (*matrix_edge)[240], uint8_t (*bin_mat)[240]){
     uint32_t row = sizeof(bin_mat) / sizeof(bin_mat[0]);
     uint32_t column = sizeof(bin_mat[0])/sizeof(bin_mat[0][0]);
     
@@ -354,7 +354,7 @@ void edge_definer(uint8_t (*matrix_edge)[100], uint8_t (*bin_mat)[100]){
     return false;
 }
 
-void edge_finder(struct image_t *im, uint8_t matrix_edge[100][100]){
+void edge_finder(struct image_t *im, uint8_t matrix_edge[520][240]){
     uint8_t bin_mat1[520][240];
     FindObjectBlobs(bin_mat1, im,180,253,100,150,130,140);//orange pole and chairs
     uint8_t bin_mat2[520][240];
