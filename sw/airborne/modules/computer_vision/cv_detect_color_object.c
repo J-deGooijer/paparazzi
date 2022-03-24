@@ -317,15 +317,15 @@ void FindObjectBlobs(uint8_t (*return_img)[240], struct image_t* img,
     
 }
 
-void edge_definer(uint8_t (*matrix_edge)[240], uint8_t (*bin_mat)[240]){
+void edge_definer(uint8_t bin_mat[520][240]){
     // uint32_t row = sizeof(bin_mat) / sizeof(bin_mat[0]);
     // uint32_t column = sizeof(bin_mat[0])/sizeof(bin_mat[0][0]);
     uint32_t row = 520;
     uint32_t column = 240;
 
-    for (uint32_t i=0; i<row; ++i){
+    for (int i=0; i<row; ++i){
         uint8_t temp = 0;
-        for (uint32_t j=0; j<column; ++j){
+        for (int j=0; j<column; ++j){
             if (temp != bin_mat[i][j]){   // if bin_mat[i][j] == 1
                 matrix_edge[i][j] = 1;
                 if (temp==0){
@@ -351,7 +351,7 @@ void edge_definer(uint8_t (*matrix_edge)[240], uint8_t (*bin_mat)[240]){
         }
     }
 
-    return false;
+    // return false;
 }
 
 void edge_finder(struct image_t *im, uint8_t matrix_edge[520][240]){
@@ -380,7 +380,7 @@ void edge_finder(struct image_t *im, uint8_t matrix_edge[520][240]){
     //printf("\n"); // new line
   //}
 
-    edge_definer(matrix_edge, bin_mat_tot);
+    edge_definer(bin_mat_tot);
 
     return false;
 }
