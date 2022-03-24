@@ -136,11 +136,7 @@ static struct image_t *object_detector(struct image_t *img, uint8_t filter)
   int object_matrix[100][8];
   //uint32_t Edges = edge_finder(img,matrix_edge[rows][cols]);
   //uint32_t xray = x_ray(matrix_edge, &k_object, object_matrix, object_amount);
-  
-
-
-
-  // Filter and find centroid
+    // Filter and find centroid
   // uint32_t count = find_object_centroid(img, &x_c, &y_c, draw, lum_min, lum_max, cb_min, cb_max, cr_min, cr_max);
   // VERBOSE_PRINT("Color count %d: %u, threshold %u, x_c %d, y_c %d\n", camera, object_count, count_threshold, x_c, y_c);
   // VERBOSE_PRINT("centroid %d: (%d, %d) r: %4.2f a: %4.2f\n", camera, x_c, y_c,
@@ -317,7 +313,7 @@ void FindObjectBlobs(uint8_t (*return_img)[240], struct image_t* img,
     
 }
 
-void edge_definer(uint8_t bin_mat[520][240]){
+void edge_definer(uint8_t (*bin_mat)[240]){
     // uint32_t row = sizeof(bin_mat) / sizeof(bin_mat[0]);
     // uint32_t column = sizeof(bin_mat[0])/sizeof(bin_mat[0][0]);
     uint32_t row = 520;
@@ -351,22 +347,23 @@ void edge_definer(uint8_t bin_mat[520][240]){
         }
     }
 
-    // return false;
+    return false;
 }
 
 void edge_finder(struct image_t *im, uint8_t matrix_edge[520][240]){
     uint8_t bin_mat1[520][240];
-    FindObjectBlobs(bin_mat1, im,180,253,100,150,130,140);//orange pole and chairs
-    uint8_t bin_mat2[520][240];
-    FindObjectBlobs(bin_mat2, im,70,120,150,160,100,120);//Blue chair
+    FindObjectBlobs(bin_mat1, im,50,170,90,130,160,240);//orange pole and chairs
+    // uint8_t bin_mat2[520][240];
+    // FindObjectBlobs(bin_mat2, im,70,120,150,160,100,120);//Blue chair
     uint8_t bin_mat3[520][240];
-    FindObjectBlobs(bin_mat3, im,100,200,90,130,160,240);//Orange
+    FindObjectBlobs(bin_mat3, im,80,253,130,180,130,180);//white
 
     uint8_t bin_mat_tot[520][240];
 
     for (uint32_t i=0; i<520; ++i){
        for (uint32_t j=0; j<240; ++j){
-            bin_mat_tot[i][j] = bin_mat1[i][j]+bin_mat2[i][j]+bin_mat3[i][j];
+            // bin_mat_tot[i][j] = bin_mat1[i][j]+bin_mat2[i][j]+bin_mat3[i][j];
+            bin_mat_tot[i][j] = bin_mat1[i][j]+bin_mat3[i][j]
         }
     } 
 
@@ -386,8 +383,9 @@ void edge_finder(struct image_t *im, uint8_t matrix_edge[520][240]){
 }
 
 
-void right_maxima_finder(uint8_t bin_mat[rows][cols],uint32_t i, uint32_t j, uint8_t k_object, uint32_t object_matrix[100][8])
+void right_maxima_finder(uint8_t (*bin_mat)[240],uint32_t i, uint32_t j, uint8_t k_object, uint32_t object_matrix[100][8])
 {   
+    //printf("right max finder called");
     uint32_t local_i = i; uint32_t local_j = j;
     bool running = true;
     bool running2 = true;
@@ -414,12 +412,14 @@ void right_maxima_finder(uint8_t bin_mat[rows][cols],uint32_t i, uint32_t j, uin
         }
       }
     }
+    //printf("right_updating");
     object_matrix[k_object][2] = local_i;
     object_matrix[k_object][3] = local_j;
 }
 
-void left_maxima_finder(uint8_t bin_mat[rows][cols],uint32_t i, uint32_t j, uint8_t k_object, uint32_t object_matrix[object_amount][8])
+void left_maxima_finder(uint8_t (*bin_mat)[240],uint32_t i, uint32_t j, uint8_t k_object, uint32_t object_matrix[object_amount][8])
 {   
+    //printf("left max finder called");
     uint32_t local_i = i; uint32_t local_j = j;
     bool running = true;
     bool running2 = true;
@@ -446,12 +446,14 @@ void left_maxima_finder(uint8_t bin_mat[rows][cols],uint32_t i, uint32_t j, uint
         }
       }
     }
+    //printf("left_updating");
     object_matrix[k_object][4] = local_i;
     object_matrix[k_object][5] = local_j;
 }
 
-void lower_maxima_finder(uint8_t bin_mat[rows][cols],uint32_t i, uint32_t j, uint8_t k_object, uint32_t object_matrix[object_amount][8])
+void lower_maxima_finder(uint8_t (*bin_mat)[240],uint32_t i, uint32_t j, uint8_t k_object, uint32_t object_matrix[object_amount][8])
 {   
+    //printf("lower max finder called");
     uint32_t local_i = i; uint32_t local_j = j;
     bool running = true;
     bool running2 = true;
@@ -478,11 +480,13 @@ void lower_maxima_finder(uint8_t bin_mat[rows][cols],uint32_t i, uint32_t j, uin
         }
       }
     }
+    // printf("%d", local_i);
+    // printf("\n%d", local_j);
     object_matrix[k_object][6] = local_i;
     object_matrix[k_object][7] = local_j;
 }
 
-void x_ray(uint8_t bin_mat[rows][cols], uint8_t* k_object, uint32_t object_matrix[object_amount][8], uint8_t object_amount)
+void x_ray(uint8_t (*bin_mat)[240], uint8_t *k_object, uint32_t object_matrix[object_amount][8], uint8_t object_amount)
 {
     uint32_t i_start = 0;
     uint32_t i_end = rows;
@@ -490,7 +494,6 @@ void x_ray(uint8_t bin_mat[rows][cols], uint8_t* k_object, uint32_t object_matri
     uint32_t j_end = cols;
     uint32_t j_running=0;
     *k_object=0;
-
     bool running = true;
 
     while (running)
@@ -520,7 +523,7 @@ void x_ray(uint8_t bin_mat[rows][cols], uint8_t* k_object, uint32_t object_matri
                         }
                     }
                     if(!inside_object)
-                    {
+                    {   
                         object_matrix[*k_object][0]=i;
                         object_matrix[*k_object][1]=j;
                         stopvar=true;
@@ -530,16 +533,13 @@ void x_ray(uint8_t bin_mat[rows][cols], uint8_t* k_object, uint32_t object_matri
             }
             if(stopvar)
             {
-                printf("%d", (uint32_t)object_matrix[*k_object][0]);
+                //printf("%d", (uint32_t)object_matrix[*k_object][0]);
                 right_maxima_finder(bin_mat, (uint32_t)object_matrix[*k_object][0], (uint32_t)object_matrix[*k_object][1], *k_object, object_matrix);
                 left_maxima_finder(bin_mat, (uint32_t)object_matrix[*k_object][0], (uint32_t)object_matrix[*k_object][1], *k_object, object_matrix);
                 lower_maxima_finder(bin_mat, (uint32_t)object_matrix[*k_object][2], (uint32_t)object_matrix[*k_object][3], *k_object, object_matrix);
                 i_start = object_matrix[*k_object][0];
                 (*k_object)+=1;
-                if(*k_object>=object_amount-1)
-                {
-                    running=false;
-                }
+                printf("k = ", *k_object);
                 break; //Breaks out of the i loop
             }
             if(j_running==cols-1&&i==rows-1)
@@ -548,6 +548,15 @@ void x_ray(uint8_t bin_mat[rows][cols], uint8_t* k_object, uint32_t object_matri
             }
         }
     }
+    printf("\nThe Array elements are:\n");
+    // outer loop for row
+    for(int i=0; i<10; i++) {  
+      // inner loop for column
+      for(int j=0; j<8; j++) {
+        printf("%d,", object_matrix[i][j]);
+      }
+    printf("\n"); // new line
+  }    
 }
 
 void CallFunction(struct image_t *img, uint8_t object_amount)
@@ -558,17 +567,16 @@ void CallFunction(struct image_t *img, uint8_t object_amount)
         }
     } 
     edge_finder(img,matrix_edge[rows][cols]);
-    printf("\nThe Array elements are:\n");
-    // outer loop for row
-    for(int i=0; i<520; i++) {
-      // inner loop for column
-      for(int j=0; j<240; j++) {
-        printf("%d ", matrix_edge[i][j]);
-      }
-    printf("\n"); // new line
-  }
     x_ray(matrix_edge, &k_object, object_matrix, object_amount);
-
+    // printf("\nThe Array elements are:\n");
+    // // outer loop for row
+    // for(int i=0; i<10; i++) {  
+    //   // inner loop for column
+    //   for(int j=0; j<8; j++) {
+    //     printf("%d,", object_matrix[i][j]);
+    //   }
+    // printf("\n"); // new line
+  //}
 
 }
 
